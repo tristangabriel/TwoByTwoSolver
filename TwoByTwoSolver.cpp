@@ -38,10 +38,10 @@ namespace {
 }
 
 // Global Functions
-void init_lookup_table() {
+void init_lookup_table() {  // Lehmer hash (applicable when sorting permutations)
     static const int FACTORIAL[] = {1, 1, 2, 6, 24, 120, 720};
     int p[] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
-    do {
+    do {  // you only need to know n-1 places due to degrees of freedom
         int hash=0;
         for (int i=0;i<6;i++) {
             int cnt=0;
@@ -65,7 +65,7 @@ void generate_cubies() {  // used for cubie indexing (needed for input)
 
 const std::string TwoByTwoSolver::move_ind[] = {"U", "U2", "U'", "L", "L2", "L'", "F", "F2", "F'", "R", "R2", "R'", "B", "B2", "B'", "D", "D2", "D'", 
                                     "x", "x2", "x'", "y", "y2", "y'", "z", "z2", "z'"};
-std::map<std::string, int> TwoByTwoSolver::ind_move;
+std::map<std::string, int> TwoByTwoSolver::ind_move;  //switches move_ind, move string as key, index as value
 
 //TwoByTwoSolver Methods
 
@@ -149,21 +149,22 @@ void TwoByTwoSolver::rotate(TwoByTwoSolver::Cube &c, const std::string move_name
     int face = move_num/3;
     for (int i=0; i<(move_num%3+1); i++) {
         if (face >= 6) {  //if its a rotational move
-            if (face==6) {
+            if (face==6) {  // x
                 rotate(c, "R");
                 rotate(c, "L'");
             }
-            else if (face==7) {
+            else if (face==7) {  // y
                 rotate(c, "U");
                 rotate(c, "D'");
             }
-            else if (face==8) {
+            else if (face==8) {  // z
                 rotate(c, "F");
                 rotate(c, "B'");
             }
             continue;
         }
 
+        // cubie cycling
         uint8_t temp_p = c.perm[cubie_order[face][3]], temp_o = c.orient[cubie_order[face][3]];
         for (int j=3;j>0;j--) {
             c.perm[cubie_order[face][j]] = c.perm[cubie_order[face][j-1]];
@@ -171,6 +172,8 @@ void TwoByTwoSolver::rotate(TwoByTwoSolver::Cube &c, const std::string move_name
         }
         c.perm[cubie_order[face][0]] = temp_p;
         c.orient[cubie_order[face][0]] = temp_o;
+        
+        // fixing orientations
         if (face!=0 && face != 5) {  // move is neither Up nor Down
             for (int j=0;j<4;j++) {
                 c.orient[cubie_order[face][j]] = (c.orient[cubie_order[face][j]] + 1 + j%2)%3;
@@ -179,13 +182,14 @@ void TwoByTwoSolver::rotate(TwoByTwoSolver::Cube &c, const std::string move_name
     }
 }
 
-void TwoByTwoSolver::scrambling(Cube& sc, const std::vector<std::string>& move_list) {
+void TwoByTwoSolver::scrambling(Cube& sc, const std::vector<std::string>& move_list) { //apply scramble
     for (const std::string& move_name : move_list) {
         rotate(sc, move_name);
     }
 }
 
 void TwoByTwoSolver::fix_rotation(const TwoByTwoSolver::Cube &sc, TwoByTwoSolver::Cube &solved) {
+    // fixes the solved cube to match sc cube's 7th cubie (bottom back left)
     int dest_cubie = 8;
     for (int j=0;j<8;j++) {
         if (solved.perm[j]==sc.perm[7]) {
@@ -214,8 +218,10 @@ std::optional< std::vector< std::string> > TwoByTwoSolver::soln_tracker(std::arr
     reverse(soln.begin(), soln.end());
     soln.push_back(move_ind[mid_move]);
 
+    //checking validity of solution on scrambled cube
     tracking_sol(parent, soln, solved_mid, solved_id);
     scrambling(scrambled, soln);
+
     if (cube_hash(scrambled)!=solved_id) {
         return std::nullopt;
     }
@@ -239,12 +245,11 @@ std::optional< std::vector< std::string> > TwoByTwoSolver::bi_bfs(TwoByTwoSolver
 
     std::queue<Cube> q({sc, dest});
     
-    int mid_state=-1;
-    while (!q.empty() && mid_state==-1) {
+    while (!q.empty()) {
         const Cube cur = q.front(); q.pop();
 
         int ind = cube_hash(cur);
-        bool sign = dist_table[ind]>=0;
+        bool sign = dist_table[ind]>=0;  // + if from right side, - if from left side
         for (uint8_t side : {9, 0, 6}) {
             if (side <= parent[ind].second && parent[ind].second < side+3) {  // if same move side
                 continue;

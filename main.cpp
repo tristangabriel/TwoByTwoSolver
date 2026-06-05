@@ -12,7 +12,7 @@ int main() {
     // Stickers are dictated clockwise, similar to 2BLD counting
     // GWBO = GW
     //        BO
-    TwoByTwoSolver::Cube c = solver.convert_to_cubie({"ORRY", "WRBB", "GWBO", "GBOW", "WGRG", "YOYY"});
+    TwoByTwoSolver::Cube c = solver.convert_to_cubie({"YYYY", "BBBB", "RGGR", "ORRO", "GOOG", "WWWW"});
 
     solver.print_cube(c);
     auto solute = solver.bi_bfs(c);
