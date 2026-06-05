@@ -4,11 +4,9 @@ A high-performance, portfolio-ready 2x2 Rubik's Cube solver written in modern C+
 
 ## Key Features & Architecture
 
-* **Decoupled Stateless Architecture:** Implements a distinct `Cube` data struct nested within a stateless `TwoByTwoSolver` computing engine. This allows multiple cube states to be instantiated, tracked, and solved concurrently.
+* **Architecture:** Implements a `Cube` struct within a stateless `TwoByTwoSolver` class. `Cube` is implemented with a permutation array of cubies and its orientation. Order of cubie goes clockwise from top view and then from bottom view. Orientation 0 means White/Yellow color is facing Up/Down, 1 for the color clockwise to White/Yellow, 2 for the color counterclockwise.
 * **Optimized Bidirectional BFS:** Uses a two-way graph search to drastically reduce the search space down to the puzzle's maximum diameter (11 moves), ensuring fast execution times.
-* **Memory-Conscious Allocation:** High-capacity data tables ($3.67\text{ MB}$ tracking distances and $29.39\text{ MB}$ tracking parents) are explicitly allocated dynamically via `std::unique_ptr` to ensure zero stack-overflow overhead.
 * **Encapsulation & Compiling Efficiency:** Heavy character indexing maps and permutation sequences are isolated entirely within the `.cpp` source file's **anonymous namespace** to preserve a lightweight, pristine header interface and prevent dependency bloat.
-* **Compile-Time Lookups:** Uses `constexpr std::string_view` arrays to ensure fixed layout parameters are evaluated at compile time, reducing runtime heap memory overhead to zero.
 
 ---
 
