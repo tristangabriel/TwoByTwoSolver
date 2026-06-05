@@ -8,6 +8,10 @@ using namespace std;
 int main() {
     TwoByTwoSolver solver;
 
+    // By face, going by top, left, front, right, back, bottom (net order)
+    // Stickers are dictated clockwise, similar to 2BLD counting
+    // GWBO = GW
+    //        BO
     TwoByTwoSolver::Cube c = solver.convert_to_cubie({"ORRY", "WRBB", "GWBO", "GBOW", "WGRG", "YOYY"});
 
     solver.print_cube(c);
