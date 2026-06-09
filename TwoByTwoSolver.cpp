@@ -39,6 +39,7 @@ namespace {
 
 
 /*
+How the cubie notation should look like in a net
        |01|
        |32|
     |03|32|21|10|
