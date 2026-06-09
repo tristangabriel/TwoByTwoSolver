@@ -37,6 +37,16 @@ namespace {
     static std::array<std::pair<int, uint8_t>, TwoByTwoSolver::MAX_STATES> parent;
 }
 
+
+/*
+       |01|
+       |32|
+    |03|32|21|10|
+    |74|45|56|67|
+       |45|
+       |76|
+*/
+
 // Global Functions
 void init_lookup_table() {  // Lehmer hash (applicable when sorting permutations)
     static const int FACTORIAL[] = {1, 1, 2, 6, 24, 120, 720};
